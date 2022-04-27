@@ -1,0 +1,140 @@
+<html>
+
+<head>
+
+	<title> Compress Text </title>
+	<link rel="stylesheet" href="style.css">
+	<link rel="shortcut icon" href="logoufp.jpeg">
+
+</head>
+
+<body>
+
+<div id="page-wrapper">
+
+		<h1>RLE COMPRESS TEXT</h1>
+		<div>
+			Select a text file: 
+			<input type="file" id="fileInput">
+		</div>
+		<p id="fileDisplayArea"></p>
+		<p id="fileDisplayArea2"></p>
+
+	</div>
+
+<script type = "text/javascript">
+
+		window.onload = function() {
+
+
+		var fileInput = document.getElementById('fileInput');
+		var fileDisplayArea = document.getElementById('fileDisplayArea');
+
+		fileInput.addEventListener('change', function(e) {
+			var file = fileInput.files[0];
+			var textType = /text.*/;
+
+			if (file.type.match(textType)) {
+				var reader = new FileReader();
+
+				reader.onload = function(e) {
+					fileDisplayArea.innerText = reader.result;
+					rleCompress(reader.result);
+				}
+
+				reader.readAsText(file,"UTF-8");	
+			} else {
+				fileDisplayArea.innerText = "File not supported!"
+			}
+		});
+}
+
+function getFlag(num){
+	switch(num){
+		case 1 : return "!";
+		case 2 : return "#";
+		case 3 : return "$";
+		case 4 : return "%";
+		case 5 : return "&";
+		case 6 : return "%";
+		case 7 : return "(";
+		case 8 : return "+";
+		case 9 : return "*";
+		case 10 : return "-";
+		case 11 : return "/";
+		case 12 : return "{";
+		case 13 : return "^";
+		default: return "ª";
+	}
+}
+
+function searchForFlag(string){
+
+	var selectedFag = getFlag(1);
+	var countFlag = 1;
+	var i;
+
+	for(i=0;i<string.length;i++){
+		if(selectedFag==string.charAt(i)){
+			i=-1;
+			countFlag=countFlag+1;
+			selectedFag=getFlag(countFlag);
+		}
+	}
+
+
+	return selectedFag;
+}
+
+function rleCompress(string){
+	var str = searchForFlag(string);
+	var i=0;
+	var compress="";
+	var c;
+	var j=0;
+	var count=0;
+	var aux=" ";
+	for(i=0;i<string.length;i++){
+		c=string.charAt(i);
+		
+		for(j=i;j<=string.length;j++){
+			if(c==string.charAt(j))
+			{
+				count++;
+			}
+			else
+			{
+				if(count>=4)
+				{
+					compress=compress.concat(str+count+c);
+
+					aux=aux.concat(str+count+c);
+					i=i+count-1;
+					count=0;
+					break;
+
+				}else{
+					aux=aux.concat(string.substring(i, i+count));
+					i=i+count-1;
+					count=0;
+					break;
+				}
+			}		
+		}
+	}
+	
+	var fileDisplayArea2 = document.getElementById('fileDisplayArea2');
+	fileDisplayArea2.innerText = aux;
+}
+
+</script>
+
+<a class="homepage" href="homepage.html">BACK</a>
+
+</body>
+
+<div class="footer">
+	<p>Ana Rita Almeida, Pedro Sousa, Multimédia II, UFP, 2022</p>
+</div>
+
+</html>

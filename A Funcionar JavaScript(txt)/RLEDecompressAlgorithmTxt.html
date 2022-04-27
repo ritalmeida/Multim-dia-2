@@ -1,0 +1,131 @@
+<html>
+
+<head>
+
+<title> Decompress Text </title>
+<link rel="stylesheet" href="style.css">
+<link rel="shortcut icon" href="logoufp.jpeg">
+
+</head>
+
+<body>
+
+<div id="page-wrapper">
+
+		<h1>RLE DECOMPRESS TEXT</h1>
+		<div>
+			Please select your flag:
+			<form name="teste">
+				<div>
+				<input type="checkbox" name="!" id="flag1" onclick="validator()" />
+				<label for="!">!</label>
+				<!--<input type="button" value="!" onclick="validator()" />-->
+				<!--<input type="checkbox" name="flag2" />-->
+				</div>
+				<!--<input type="button" value="!"/>-->
+				<!--<input type="checkbox" name="flag2" onclick="validator()" />
+				<input type="button" value="$" />-->
+				<div>
+				<input type="checkbox" name="$" id="flag2" onclick="validator()"/>
+				<label for="$">$</label>
+				</div>
+ 			</form>
+			Select a text file: 
+			<input type="file" id="fileInput">
+		</div>
+		<p id="fileDisplayArea"></p>
+		<p id="fileDisplayArea2"></p>
+		<p id="demo"></p>
+	</div>
+
+<script type = "text/javascript">
+
+		window.onload = function() {
+
+		var fileInput = document.getElementById('fileInput');
+		var fileDisplayArea = document.getElementById('fileDisplayArea');
+
+		fileInput.addEventListener('change', function(e) {
+			var file = fileInput.files[0];
+			var textType = /text.*/;
+
+			if (file.type.match(textType)) {
+				var reader = new FileReader();
+
+				reader.onload = function(e) {
+					fileDisplayArea.innerText = reader.result;
+					rleDeCompress(reader.result);
+				}
+
+				reader.readAsText(file,"UTF-8");	
+			} else {
+				fileDisplayArea.innerText = "File not supported!"
+			}
+		});
+}
+
+function validator(){
+	
+	if(document.teste.flag1.checked){
+		alert("Flag to decompress TXT : !");
+		global = "!";
+	}else if(document.teste.flag2.checked){
+		alert("Flag to decompress TXT : $");
+		global = "$";
+	}
+}
+
+function rleDeCompress(string){
+	
+	var posflag = 0;
+	var i = 0, j = 0, k = 1, count = 0,  nrepetes = 0;;
+	var compress = "", str = "", straux = "", nrepete_string = "";
+	var c, chardesc;
+	
+	for(i = 0;i < string.length; i++){
+		
+		c = string.charAt(i);
+			if(c == global){
+
+				nrepete_string = "";
+				k = 1;
+				// enquanto o proximo caracter for um numero, concatenar os numeros numa string
+				while(string.charAt(i+k) == "0" || string.charAt(i+k) == "1" || string.charAt(i+k) == "2" || string.charAt(i+k) == "3" || string.charAt(i+k) == "4" ||  string.charAt(i+k) == "5" ||string.charAt(i+k) == "6" || string.charAt(i+k) =="7" ||string.charAt(i+k) == "8" ||string.charAt(i+k) == "9"){
+					
+					nrepete_string = nrepete_string.concat(string.charAt(i+k));
+					k = k + 1;
+				}
+				// k= numero de digitos do numero.  k=k-1 porque incrementa +1 antes de sair do ciclo while
+				k = k - 1;
+				// parse da string para inteiro
+				nrepetes = parseInt(nrepete_string);
+
+				chardesc=string.charAt(i + 1 + k);
+				
+				for(j = 0; j < nrepetes; j++){
+					
+					str = str.concat(chardesc);
+				}
+				straux = straux.concat(str);
+				str = "";
+				// incrementar i + o numero de digitos do numero de repeticoes + 1 (posicao do caracter repetitivo).
+				i = i + 1 + k;
+			}else{
+				straux = straux.concat(c);
+			}
+	}
+	document.getElementById("demo").innerHTML = straux;
+}
+
+</script>
+
+<a class="homepage" href="homepage.html">BACK</a>
+
+
+
+<div class="footer">
+	<p>Ana Rita Almeida, Pedro Sousa, Multimédia II, UFP, 2022</p>
+</div>
+
+
+</html>
