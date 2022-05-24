@@ -35,6 +35,7 @@
 		</div>
 		<p id="fileDisplayArea"></p>
 		<p id="fileDisplayArea2"></p>
+		<p id="fileDisplayArea3"></p>
 		<p id="demo"></p>
 	</div>
 
@@ -42,17 +43,17 @@
 
 		window.onload = function() {
 
-		var fileInput = document.getElementById('fileInput');
-		var fileDisplayArea = document.getElementById('fileDisplayArea');
+			const fileInput = document.getElementById('fileInput');
+			const fileDisplayArea = document.getElementById('fileDisplayArea');
 
-		fileInput.addEventListener('change', function(e) {
-			var file = fileInput.files[0];
-			var textType = /text.*/;
+			fileInput.addEventListener('change', function(e) {
+				const file = fileInput.files[0];
+				const textType = /text.*/;
 
-			if (file.type.match(textType)) {
-				var reader = new FileReader();
+				if (file.type.match(textType)) {
+					const reader = new FileReader();
 
-				reader.onload = function(e) {
+					reader.onload = function(e) {
 					fileDisplayArea.innerText = reader.result;
 					rleDeCompress(reader.result);
 				}
@@ -65,7 +66,7 @@
 }
 
 function validator(){
-	
+
 	if(document.teste.flag1.checked){
 		alert("Flag to decompress TXT : !");
 		global = "!";
@@ -76,21 +77,21 @@ function validator(){
 }
 
 function rleDeCompress(string){
-	
-	var posflag = 0;
-	var i = 0, j = 0, k = 1, count = 0,  nrepetes = 0;;
-	var compress = "", str = "", straux = "", nrepete_string = "";
-	var c, chardesc;
-	
+
+	const posflag = 0, startTime = performance.now();
+	let i = 0, j = 0, k = 1, count = 0, nrepetes = 0;
+	let compress = "", str = "", straux = "", nrepete_string = "";
+	let c, chardesc;
+
 	for(i = 0;i < string.length; i++){
 		
 		c = string.charAt(i);
-			if(c == global){
+			if(c === global){
 
 				nrepete_string = "";
 				k = 1;
 				// enquanto o proximo caracter for um numero, concatenar os numeros numa string
-				while(string.charAt(i+k) == "0" || string.charAt(i+k) == "1" || string.charAt(i+k) == "2" || string.charAt(i+k) == "3" || string.charAt(i+k) == "4" ||  string.charAt(i+k) == "5" ||string.charAt(i+k) == "6" || string.charAt(i+k) =="7" ||string.charAt(i+k) == "8" ||string.charAt(i+k) == "9"){
+				while(string.charAt(i+k) === "0" || string.charAt(i+k) === "1" || string.charAt(i+k) === "2" || string.charAt(i+k) === "3" || string.charAt(i+k) === "4" ||  string.charAt(i+k) === "5" ||string.charAt(i+k) === "6" || string.charAt(i+k) ==="7" ||string.charAt(i+k) === "8" ||string.charAt(i+k) === "9"){
 					
 					nrepete_string = nrepete_string.concat(string.charAt(i+k));
 					k = k + 1;
@@ -110,10 +111,16 @@ function rleDeCompress(string){
 				str = "";
 				// incrementar i + o numero de digitos do numero de repeticoes + 1 (posicao do caracter repetitivo).
 				i = i + 1 + k;
-			}else{
+			}
+			else
+			{
 				straux = straux.concat(c);
 			}
 	}
+	const endTime = performance.now();
+	const time = endTime - startTime;
+	const fileDisplayArea3 = document.getElementById('fileDisplayArea3');
+	fileDisplayArea3.innerText = "Tempo para descompressão: " + time.toString() + "s";
 	document.getElementById("demo").innerHTML = straux;
 }
 
@@ -127,5 +134,5 @@ function rleDeCompress(string){
 	<p>Ana Rita Almeida, Pedro Sousa, Multimédia II, UFP, 2022</p>
 </div>
 
-
+</body>
 </html>

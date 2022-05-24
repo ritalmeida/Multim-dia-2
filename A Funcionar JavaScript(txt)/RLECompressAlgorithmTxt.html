@@ -19,23 +19,22 @@
 		</div>
 		<p id="fileDisplayArea"></p>
 		<p id="fileDisplayArea2"></p>
+		<p id="fileDisplayArea3"></p>
 
 	</div>
 
 <script type = "text/javascript">
-
-		window.onload = function() {
-
-
-		var fileInput = document.getElementById('fileInput');
-		var fileDisplayArea = document.getElementById('fileDisplayArea');
-
+	let sizeBefore = 0;
+	window.onload = function() {
+		const fileInput = document.getElementById('fileInput');
+		const fileDisplayArea = document.getElementById('fileDisplayArea');
 		fileInput.addEventListener('change', function(e) {
-			var file = fileInput.files[0];
-			var textType = /text.*/;
+			const file = fileInput.files[0];
+			sizeBefore = fileInput.files[0].size;
+			const textType = /text.*/;
 
 			if (file.type.match(textType)) {
-				var reader = new FileReader();
+				const reader = new FileReader();
 
 				reader.onload = function(e) {
 					fileDisplayArea.innerText = reader.result;
@@ -70,12 +69,12 @@ function getFlag(num){
 
 function searchForFlag(string){
 
-	var selectedFag = getFlag(1);
-	var countFlag = 1;
-	var i;
+	let selectedFag = getFlag(1);
+	let countFlag = 1;
+	let i;
 
 	for(i=0;i<string.length;i++){
-		if(selectedFag==string.charAt(i)){
+		if(selectedFag===string.charAt(i)){
 			i=-1;
 			countFlag=countFlag+1;
 			selectedFag=getFlag(countFlag);
@@ -87,18 +86,19 @@ function searchForFlag(string){
 }
 
 function rleCompress(string){
-	var str = searchForFlag(string);
-	var i=0;
-	var compress="";
-	var c;
-	var j=0;
-	var count=0;
-	var aux=" ";
+	const str = searchForFlag(string);
+	let i = 0;
+	let compress = "";
+	let c;
+	let j = 0;
+	let count = 0;
+	let aux = " ";
+	const startTime = performance.now();
 	for(i=0;i<string.length;i++){
 		c=string.charAt(i);
 		
 		for(j=i;j<=string.length;j++){
-			if(c==string.charAt(j))
+			if(c===string.charAt(j))
 			{
 				count++;
 			}
@@ -122,9 +122,20 @@ function rleCompress(string){
 			}		
 		}
 	}
-	
-	var fileDisplayArea2 = document.getElementById('fileDisplayArea2');
+
+	const fileDisplayArea2 = document.getElementById('fileDisplayArea2');
 	fileDisplayArea2.innerText = aux;
+	const endTime = performance.now();
+	const byteSize = str => new Blob([str]).size;
+	const sizeAfter = byteSize(aux);
+	const time = endTime - startTime;
+	const ratio = sizeAfter/sizeBefore;
+	const fileDisplayArea3 = document.getElementById('fileDisplayArea3');
+	fileDisplayArea3.innerText = "Tempo para compressão: " + time.toString() + "s\n"
+			+ "Tamanho antes em bytes: " + sizeBefore + "\n"
+			+ "Tamanho após a compressão: " + sizeAfter + "\n"
+			+ "Rácio : " + ratio;
+
 }
 
 </script>
